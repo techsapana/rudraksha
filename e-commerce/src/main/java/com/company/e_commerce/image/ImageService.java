@@ -15,5 +15,13 @@ public interface ImageService {
     void deleteImages(List<String> publicIds);
     
     CloudinaryImageResult uploadHeroImage(MultipartFile file);
+    
+    List<CloudinaryImageResult> uploadBlogImages(
+            List<MultipartFile> files
+    );
+
+    CloudinaryImageResult uploadBlogCover(
+            MultipartFile file
+    );
 
 }
