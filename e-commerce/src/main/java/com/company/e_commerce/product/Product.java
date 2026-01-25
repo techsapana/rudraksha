@@ -4,12 +4,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale.Category;
 import java.util.Set;
 
-import javax.swing.text.html.HTML.Tag;
-
+import com.company.e_commerce.tag.Tag;
 import com.company.e_commerce.admin.BaseEntity;
+import com.company.e_commerce.category.Category;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -77,6 +76,10 @@ public class Product extends BaseEntity {
         orphanRemoval = true
     )
     private List<ProductImage> images = new ArrayList<>();
+    
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isActive = true;
 
     @Column(nullable = false)
     private Long soldCount = 0L; // VERY IMPORTANT FOR ANALYTICS

@@ -89,5 +89,61 @@ public class CloudinaryImageServiceImpl implements ImageService {
             throw new RuntimeException("Hero image upload failed");
         }
     }
+    
+    @Override
+    public CloudinaryImageResult uploadBlogCover(MultipartFile file) {
+        try {
+            Map uploadResult = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    Map.of(
+                        "folder", "blog/covers",
+                        "resource_type", "image"
+                    )
+            );
+
+            return CloudinaryImageResult.builder()
+                    .imageUrl(uploadResult.get("secure_url").toString())
+                    .publicId(uploadResult.get("public_id").toString())
+                    .build();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Blog cover upload failed");
+        }
+    }
+    
+    @Override
+    public List<CloudinaryImageResult> uploadBlogImages(List<MultipartFile> files) {
+
+        if (files == null || files.isEmpty()) {
+            throw new BadRequestException("Blog images are required");
+        }
+
+        List<CloudinaryImageResult> results = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            try {
+                Map uploadResult = cloudinary.uploader().upload(
+                        file.getBytes(),
+                        Map.of(
+                            "folder", "blog/images",
+                            "resource_type", "image"
+                        )
+                );
+
+                results.add(
+                        CloudinaryImageResult.builder()
+                                .imageUrl(uploadResult.get("secure_url").toString())
+                                .publicId(uploadResult.get("public_id").toString())
+                                .build()
+                );
+
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload blog image");
+            }
+        }
+
+        return results;
+    }
+
 
 }

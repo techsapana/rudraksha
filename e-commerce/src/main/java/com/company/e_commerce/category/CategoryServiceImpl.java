@@ -2,10 +2,14 @@ package com.company.e_commerce.category;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.company.e_commerce.expection.BadRequestException;
 import com.company.e_commerce.expection.ResourceNotFoundException;
 
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 
 @Service
 @RequiredArgsConstructor

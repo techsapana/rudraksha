@@ -2,7 +2,6 @@ package com.company.e_commerce.admin;
 
 import java.util.List;
 
-import org.apache.tomcat.util.http.ResponseUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.e_commerce.category.CategoryRequest;
 import com.company.e_commerce.category.CategoryResponse;
 import com.company.e_commerce.category.CategoryService;
+import com.company.e_commerce.util.ResponseUtil;
 import com.ecommerce.app.payload.ApiResponse;
 
 import jakarta.validation.Valid;

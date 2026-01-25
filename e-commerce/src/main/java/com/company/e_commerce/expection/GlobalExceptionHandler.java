@@ -1,12 +1,12 @@
 package com.company.e_commerce.expection;
 
 import org.apache.coyote.BadRequestException;
-import org.apache.tomcat.util.http.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.company.e_commerce.util.ResponseUtil;
 import com.ecommerce.app.payload.ApiResponse;
 
 @RestControllerAdvice

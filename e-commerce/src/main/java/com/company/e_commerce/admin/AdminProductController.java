@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.company.e_commerce.product.ProductCreateRequest;
 import com.company.e_commerce.product.ProductResponse;
 import com.company.e_commerce.product.ProductService;
+import com.company.e_commerce.product.ProductUpdateRequest;
 import com.company.e_commerce.util.ResponseUtil;
 import com.ecommerce.app.payload.ApiResponse;
 

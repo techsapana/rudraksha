@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.company.e_commerce.category.Category;
 import com.company.e_commerce.category.CategoryRepository;
@@ -13,6 +17,9 @@ import com.company.e_commerce.image.CloudinaryImageResult;
 import com.company.e_commerce.image.ImageService;
 import com.company.e_commerce.tag.Tag;
 import com.company.e_commerce.tag.TagRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -86,18 +93,77 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductResponse updateProduct(
+            Long productId,
+            ProductUpdateRequest request,
+            List<MultipartFile> images
+    ) {
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+        // Update basic fields
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+
+        // Update category if changed
+        if (!product.getCategory().getId().equals(request.getCategoryId())) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+            product.setCategory(category);
+        }
+
+        // Update tags
+        Set<Tag> tags = new HashSet<>(tagRepository.findAllById(request.getTagIds()));
+        if (tags.isEmpty()) {
+            throw new BadRequestException("At least one tag is required");
+        }
+        product.setTags(tags);
+
+        // Replace images ONLY if new images are provided
+        if (images != null && !images.isEmpty()) {
+
+            // delete old images from Cloudinary
+            List<String> oldPublicIds = product.getImages()
+                    .stream()
+                    .map(ProductImage::getPublicId)
+                    .toList();
+
+            imageService.deleteImages(oldPublicIds);
+
+            // clear old images
+            product.getImages().clear();
+
+            // upload new images
+            List<CloudinaryImageResult> uploadedImages =
+                    imageService.uploadProductImages(
+                            images,
+                            product.getCategory().getName(),
+                            product.getName()
+                    );
+
+            uploadedImages.forEach(img -> {
+                ProductImage pi = new ProductImage();
+                pi.setImageUrl(img.getImageUrl());
+                pi.setPublicId(img.getPublicId());
+                pi.setProduct(product);
+                product.getImages().add(pi);
+            });
+        }
+
+        return map(productRepository.save(product));
+    }
+
+    @Override
     public void deleteProduct(Long id) {
 
         Product product = productRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        List<String> publicIds = product.getImages()
-            .stream()
-            .map(ProductImage::getPublicId)
-            .toList();
+        product.setIsActive(false);
 
-        imageService.deleteImages(publicIds);
-        productRepository.delete(product);
+        productRepository.save(product);
     }
 
     private ProductResponse map(Product product) {

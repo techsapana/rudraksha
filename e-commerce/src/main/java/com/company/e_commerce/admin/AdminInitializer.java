@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.company.e_commerce.user.User;
+import com.company.e_commerce.user.UserRepository;
 
 
 @Configuration
@@ -34,7 +36,6 @@ private String adminPassword;
             // Check if admin already exists
             if (adminRepository.findByEmail(adminEmail).isEmpty()) {
                 User admin = User.builder()
-                        .fullName(adminUserName)
                         .password(passwordEncoder.encode(adminPassword))
                         .role(Role.ADMIN)
                         .email(adminEmail)
