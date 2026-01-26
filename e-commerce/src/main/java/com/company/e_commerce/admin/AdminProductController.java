@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.product.ProductCreateRequest;
 import com.company.e_commerce.product.ProductResponse;
 import com.company.e_commerce.product.ProductService;
 import com.company.e_commerce.product.ProductUpdateRequest;
 import com.company.e_commerce.util.ResponseUtil;
-import com.ecommerce.app.payload.ApiResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +39,8 @@ public class AdminProductController {
             @Valid @RequestPart("data") ProductCreateRequest request,
             @RequestPart("images") List<MultipartFile> images
     ) {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Product created successfully",
-                productService.createProduct(request, images)
-            )
-        );
+        ProductResponse response = productService.createProduct(request, images);
+        return ResponseUtil.success("Product created successfully", response);
     }
 
     // ✅ UPDATE
@@ -58,22 +54,18 @@ public class AdminProductController {
             @RequestPart(value = "images", required = false)
             List<MultipartFile> images
     ) {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Product updated successfully",
-                productService.updateProduct(id, request, images)
-            )
-        );
+        ProductResponse response =
+                productService.updateProduct(id, request, images);
+
+        return ResponseUtil.success("Product updated successfully", response);
     }
 
     // ✅ ADMIN GET ALL
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getAll() {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
+        return ResponseUtil.success(
                 "Products fetched successfully",
                 productService.getAllProducts()
-            )
         );
     }
 
@@ -82,23 +74,18 @@ public class AdminProductController {
     public ResponseEntity<ApiResponse<ProductResponse>> getById(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
+        return ResponseUtil.success(
                 "Product fetched successfully",
                 productService.getProductById(id)
-            )
         );
     }
 
     // ✅ DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
 
         productService.deleteProduct(id);
 
-        return ResponseEntity.ok(
-            ResponseUtil.success("Product deleted successfully")
-        );
+        return ResponseUtil.success("Product deleted successfully");
     }
 }
-

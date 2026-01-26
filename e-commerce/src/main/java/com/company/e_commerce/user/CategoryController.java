@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.e_commerce.category.CategoryResponse;
 import com.company.e_commerce.category.CategoryService;
+import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.util.ResponseUtil;
-import com.ecommerce.app.payload.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,24 +22,17 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    // ✅ GET ALL CATEGORIES
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAll() {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Category list fetched successfully",
-                categoryService.getAll()
-            )
-        );
+        List<CategoryResponse> categories = categoryService.getAll();
+        return ResponseUtil.success("Category list fetched successfully", categories);
     }
 
+    // ✅ GET CATEGORY BY ID
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoryResponse>> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Category fetched successfully",
-                categoryService.getById(id)
-            )
-        );
+        CategoryResponse category = categoryService.getById(id);
+        return ResponseUtil.success("Category fetched successfully", category);
     }
 }
-

@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.tag.TagRequest;
 import com.company.e_commerce.tag.TagResponse;
 import com.company.e_commerce.tag.TagService;
 import com.company.e_commerce.util.ResponseUtil;
-import com.ecommerce.app.payload.ApiResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,59 +30,51 @@ public class AdminTagController {
 
     private final TagService tagService;
 
+    // ✅ CREATE
     @PostMapping
     public ResponseEntity<ApiResponse<TagResponse>> create(
-        @Valid @RequestBody TagRequest request
+            @Valid @RequestBody TagRequest request
     ) {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Tag created successfully",
-                tagService.create(request)
-            )
-        );
+        TagResponse response = tagService.create(request);
+        return ResponseUtil.success("Tag created successfully", response);
     }
 
+    // ✅ UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<TagResponse>> update(
-        @PathVariable Long id,
-        @Valid @RequestBody TagRequest request
+            @PathVariable Long id,
+            @Valid @RequestBody TagRequest request
     ) {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Tag updated successfully",
-                tagService.update(id, request)
-            )
-        );
+        TagResponse response = tagService.update(id, request);
+        return ResponseUtil.success("Tag updated successfully", response);
     }
 
+    // ✅ DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
 
         tagService.delete(id);
 
-        return ResponseEntity.ok(
-            ResponseUtil.success("Tag deleted successfully")
-        );
+        return ResponseUtil.success("Tag deleted successfully");
     }
 
+    // ✅ GET ALL
     @GetMapping
     public ResponseEntity<ApiResponse<List<TagResponse>>> getAll() {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
+        return ResponseUtil.success(
                 "Tag list fetched successfully",
                 tagService.getAll()
-            )
         );
     }
 
+    // ✅ GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<TagResponse>> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
+    public ResponseEntity<ApiResponse<TagResponse>> getById(
+            @PathVariable Long id
+    ) {
+        return ResponseUtil.success(
                 "Tag fetched successfully",
                 tagService.getById(id)
-            )
         );
     }
 }
-

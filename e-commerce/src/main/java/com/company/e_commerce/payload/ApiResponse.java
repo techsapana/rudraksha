@@ -1,4 +1,4 @@
-package com.ecommerce.app.payload;
+package com.company.e_commerce.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ApiResponse<T> {
-   private boolean success;
-   private String message;
-   private T data;
+    private boolean success;
+    private String message;
+    private T data;
 }

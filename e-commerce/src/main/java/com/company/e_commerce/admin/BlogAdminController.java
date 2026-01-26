@@ -15,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.company.e_commerce.blog.BlogDetailResponse;
 import com.company.e_commerce.blog.BlogRequest;
 import com.company.e_commerce.blog.BlogService;
+import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.util.ResponseUtil;
-import com.ecommerce.app.payload.ApiResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,39 +28,33 @@ public class BlogAdminController {
 
     private final BlogService blogService;
 
+    // ✅ CREATE BLOG
     @PostMapping
     public ResponseEntity<ApiResponse<BlogDetailResponse>> create(
-            @Valid @RequestPart BlogRequest request,
-            @RequestPart MultipartFile coverImage,
-            @RequestPart(required = false) List<MultipartFile> images) {
-
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Blog created",
-                blogService.create(request, coverImage, images)
-            )
-        );
+            @Valid @RequestPart("data") BlogRequest request,
+            @RequestPart("coverImage") MultipartFile coverImage,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images
+    ) {
+        BlogDetailResponse created = blogService.create(request, coverImage, images);
+        return ResponseUtil.success("Blog created successfully", created);
     }
 
+    // ✅ UPDATE BLOG
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<BlogDetailResponse>> update(
             @PathVariable Long id,
-            @Valid @RequestPart BlogRequest request,
-            @RequestPart(required = false) MultipartFile coverImage,
-            @RequestPart(required = false) List<MultipartFile> images) {
-
+            @Valid @RequestPart("data") BlogRequest request,
+            @RequestPart(value = "coverImage", required = false) MultipartFile coverImage,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images
+    ) {
         BlogDetailResponse updated = blogService.update(id, request, coverImage, images);
-
-        return ResponseEntity.ok(
-                ResponseUtil.success("Blog updated successfully", updated)
-        );
+        return ResponseUtil.success("Blog updated successfully", updated);
     }
 
+    // ✅ DELETE BLOG
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
         blogService.delete(id);
-        return ResponseEntity.ok(
-            ResponseUtil.success("Blog deleted")
-        );
+        return ResponseUtil.success("Blog deleted successfully");
     }
 }

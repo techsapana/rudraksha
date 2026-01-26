@@ -1,43 +1,42 @@
 package com.company.e_commerce.util;
 
-import com.ecommerce.app.payload.ApiResponse;
+import com.company.e_commerce.payload.ApiResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
-public final class ResponseUtil {
+public class ResponseUtil {
 
-    // prevent instantiation
     private ResponseUtil() {}
 
-    /**
-     * Success response with data
-     */	
-    public static <T> ApiResponse<T> success(String message, T data) {
-        return ApiResponse.<T>builder()
-                .success(true)
-                .message(message)
-                .data(data)
-                .build();
+    public static <T> ResponseEntity<ApiResponse<T>> success(String message, T data) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(ApiResponse.<T>builder()
+                        .success(true)
+                        .message(message)
+                        .data(data)
+                        .build());
     }
 
-    /**
-     * Success response without data (DELETE, etc.)
-     */
-    public static ApiResponse<Void> success(String message) {
-        return ApiResponse.<Void>builder()
-                .success(true)
-                .message(message)
-                .data(null)
-                .build();
+    public static ResponseEntity<ApiResponse<Object>> success(String message) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(ApiResponse.builder()
+                        .success(true)
+                        .message(message)
+                        .data(null)
+                        .build());
     }
 
-    /**
-     * Failure response
-     */
-    public static ApiResponse<Void> failure(String message) {
-        return ApiResponse.<Void>builder()
-                .success(false)
-                .message(message)
-                .data(null)
-                .build();
+    public static ResponseEntity<ApiResponse<Object>> error(String message, HttpStatus status) {
+        return ResponseEntity.status(status)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(ApiResponse.builder()
+                        .success(false)
+                        .message(message)
+                        .data(null)
+                        .build());
     }
 }
-
