@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.company.e_commerce.blog.BlogDetailResponse;
+import com.company.e_commerce.blog.BlogListResponse;
 import com.company.e_commerce.blog.BlogRequest;
 import com.company.e_commerce.blog.BlogService;
 import com.company.e_commerce.payload.ApiResponse;
@@ -56,5 +58,23 @@ public class BlogAdminController {
     public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
         blogService.delete(id);
         return ResponseUtil.success("Blog deleted successfully");
+    }
+
+    // ✅ GET ALL BLOGS (ADMIN)
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<BlogListResponse>>> getAll() {
+        return ResponseUtil.success(
+                "Blogs fetched successfully",
+                blogService.getAllForUser()
+        );
+    }
+
+    // ✅ GET BLOG BY ID (ADMIN)
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<BlogDetailResponse>> getById(@PathVariable Long id) {
+        return ResponseUtil.success(
+                "Blog fetched successfully",
+                blogService.getById(id)
+        );
     }
 }

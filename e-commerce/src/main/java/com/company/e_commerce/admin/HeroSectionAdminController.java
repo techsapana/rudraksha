@@ -19,8 +19,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin/hero")
-@RequiredArgsConstructor
+	@RequestMapping("/api/admin/hero")
+	@RequiredArgsConstructor
 public class HeroSectionAdminController {
 
     private final HeroSectionService service;

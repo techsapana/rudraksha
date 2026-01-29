@@ -105,19 +105,22 @@ public class BlogServiceImpl implements BlogService {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
+        // delete blog images
         imageService.deleteImages(
                 blog.getImages().stream()
                         .map(BlogImage::getPublicId)
                         .toList()
         );
 
+        // delete cover image
         imageService.deleteImages(
                 List.of(blog.getCoverImagePublicId())
         );
 
-        blog.setIsActive(false);
-        blogRepository.save(blog);
+        // hard delete blog
+        blogRepository.delete(blog);
     }
+
 
     @Override
     public List<BlogListResponse> getAllForUser() {

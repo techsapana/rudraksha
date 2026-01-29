@@ -65,10 +65,13 @@ public class HeroSectionServiceImpl implements HeroSectionService {
         HeroSection hero = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hero section not found"));
 
+        // delete image from cloud (Cloudinary / S3 etc)
         imageService.deleteImages(List.of(hero.getImagePublicId()));
-        hero.setIsActive(false);
-        repository.save(hero);
+
+        // hard delete from DB
+        repository.delete(hero);
     }
+
 
     @Override
     public List<HeroSectionResponse> getAllForAdmin() {

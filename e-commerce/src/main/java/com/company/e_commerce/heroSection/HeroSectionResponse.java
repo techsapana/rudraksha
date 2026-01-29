@@ -12,3 +12,4 @@ public class HeroSectionResponse {
     private Double basePrice;
     private String imageUrl;
 }
+		

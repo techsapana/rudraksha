@@ -22,7 +22,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // ✅ GET ALL PRODUCTS
+    // GET ALL PRODUCTS
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getAll() {
         return ResponseUtil.success(

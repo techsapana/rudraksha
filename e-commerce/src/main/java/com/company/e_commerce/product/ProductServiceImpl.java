@@ -37,15 +37,17 @@ public class ProductServiceImpl implements ProductService {
             List<MultipartFile> images
     ) {
 
+        // 1️⃣ Fetch category
         Category category = categoryRepository.findById(request.getCategoryId())
             .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
+        // 2️⃣ Fetch tags
         Set<Tag> tags = new HashSet<>(tagRepository.findAllById(request.getTagIds()));
-
         if (tags.isEmpty()) {
             throw new BadRequestException("At least one tag is required");
         }
 
+        // 3️⃣ Upload images
         List<CloudinaryImageResult> uploadedImages =
                 imageService.uploadProductImages(
                         images,
@@ -53,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
                         request.getName()
                 );
 
+        // 4️⃣ Build product with safe defaults
         Product product = Product.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -60,8 +63,11 @@ public class ProductServiceImpl implements ProductService {
                 .category(category)
                 .tags(tags)
                 .images(new ArrayList<>())
+                .isActive(true)        // Default to active
+                .soldCount(0L)         // Default sold count
                 .build();
 
+        // 5️⃣ Map uploaded images to ProductImage entities
         uploadedImages.forEach(img -> {
             ProductImage pi = new ProductImage();
             pi.setImageUrl(img.getImageUrl());
@@ -70,6 +76,7 @@ public class ProductServiceImpl implements ProductService {
             product.getImages().add(pi);
         });
 
+        // 6️⃣ Save and return
         return map(productRepository.save(product));
     }
 
@@ -156,15 +163,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        product.setIsActive(false);
+        // 1️⃣ Collect all image public IDs
+        List<String> imagePublicIds = product.getImages().stream()
+                .map(ProductImage::getPublicId)
+                .toList();
 
-        productRepository.save(product);
+        // 2️⃣ Delete images from cloud
+        if (!imagePublicIds.isEmpty()) {
+            imageService.deleteImages(imagePublicIds);
+        }
+
+        // 3️⃣ HARD DELETE product from DB
+        productRepository.delete(product);
     }
+
 
     private ProductResponse map(Product product) {
 
@@ -172,6 +190,7 @@ public class ProductServiceImpl implements ProductService {
                 .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
+                .description(product.getDescription())
                 .category(product.getCategory().getName())
                 .tags(
                     product.getTags()
