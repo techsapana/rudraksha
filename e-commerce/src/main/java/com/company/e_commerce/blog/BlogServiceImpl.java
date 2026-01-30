@@ -3,6 +3,7 @@ package com.company.e_commerce.blog;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.company.e_commerce.image.CloudinaryImageResult;
@@ -123,6 +124,7 @@ public class BlogServiceImpl implements BlogService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<BlogListResponse> getAllForUser() {
         return blogRepository.findByIsActiveTrueOrderByCreatedAtDesc()
                 .stream()
@@ -131,6 +133,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BlogDetailResponse getById(Long id) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
