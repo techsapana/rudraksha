@@ -20,6 +20,7 @@ public interface HeroSectionService {
     void delete(Long id);
 
     List<HeroSectionResponse> getAllForAdmin();
+    HeroSectionStatsResponse getHeroStats();
 
     List<HeroSectionResponse> getAllForUser();
 }

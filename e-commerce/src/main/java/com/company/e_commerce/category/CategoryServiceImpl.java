@@ -69,6 +69,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         return map(category);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public CategoryStatsResponse getCategoryStats() {
+        long total = categoryRepository.count();
+        return new CategoryStatsResponse(total);
+    }
 
     private CategoryResponse map(Category category) {
         return new CategoryResponse(category.getId(), category.getName());

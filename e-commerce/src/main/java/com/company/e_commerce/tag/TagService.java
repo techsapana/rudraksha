@@ -13,4 +13,7 @@ public interface TagService {
     List<TagResponse> getAll();
 
     TagResponse getById(Long id);
+    
+    TagStatsResponse getTagStats();
+
 }

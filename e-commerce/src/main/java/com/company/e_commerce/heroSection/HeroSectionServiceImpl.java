@@ -88,6 +88,12 @@ public class HeroSectionServiceImpl implements HeroSectionService {
                 .map(this::mapToResponse)
                 .toList();
     }
+    
+    @Override
+    public HeroSectionStatsResponse getHeroStats() {
+        long total = repository.count();
+        return new HeroSectionStatsResponse(total);
+    }
 
     private HeroSectionResponse mapToResponse(HeroSection hero) {
         return HeroSectionResponse.builder()

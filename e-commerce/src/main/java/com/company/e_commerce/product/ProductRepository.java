@@ -2,6 +2,7 @@ package com.company.e_commerce.product;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,5 +42,7 @@ public interface ProductRepository
 
     // ✅ EXISTS CHECK (OPTIONAL – for uniqueness validation)
     boolean existsByNameIgnoreCase(String name);
+    
+    Optional<Product> findTopByOrderBySoldCountDesc();
 }
 

@@ -19,6 +19,7 @@ import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.product.ProductCreateRequest;
 import com.company.e_commerce.product.ProductResponse;
 import com.company.e_commerce.product.ProductService;
+import com.company.e_commerce.product.ProductStatsResponse;
 import com.company.e_commerce.product.ProductUpdateRequest;
 import com.company.e_commerce.util.ResponseUtil;
 
@@ -87,5 +88,13 @@ public class AdminProductController {
         productService.deleteProduct(id);
 
         return ResponseUtil.success("Product deleted successfully");
+    }
+    
+    @GetMapping("/products")
+    public ResponseEntity<ApiResponse<ProductStatsResponse>> productStats() {
+        return ResponseUtil.success(
+                "Product stats fetched successfully",
+                productService.getProductStats()
+        );
     }
 }

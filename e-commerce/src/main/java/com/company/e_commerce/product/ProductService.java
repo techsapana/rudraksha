@@ -16,6 +16,7 @@ public interface ProductService {
             ProductUpdateRequest request,
             List<MultipartFile> images
     );
+    ProductStatsResponse getProductStats();
 
     List<ProductResponse> getAllProducts();
 

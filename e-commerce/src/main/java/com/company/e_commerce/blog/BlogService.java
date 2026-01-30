@@ -18,6 +18,7 @@ public interface BlogService {
             MultipartFile coverImage,
             List<MultipartFile> images
     );
+    BlogStatsResponse getBlogStats();
 
     void delete(Long id);
 

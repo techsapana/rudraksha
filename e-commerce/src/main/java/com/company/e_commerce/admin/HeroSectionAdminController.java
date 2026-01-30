@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.company.e_commerce.heroSection.HeroSectionRequest;
 import com.company.e_commerce.heroSection.HeroSectionService;
+import com.company.e_commerce.heroSection.HeroSectionStatsResponse;
+import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.util.ResponseUtil;
 
 import jakarta.validation.Valid;
@@ -67,6 +69,14 @@ public class HeroSectionAdminController {
                 "Hero sections fetched",
                 service.getAllForAdmin()
             )
+        );
+    }
+    
+    @GetMapping("/heroes")
+    public ResponseEntity<ApiResponse<HeroSectionStatsResponse>> heroStats() {
+        return ResponseUtil.success(
+                "Hero section stats fetched successfully",
+                service.getHeroStats()
         );
     }
 }

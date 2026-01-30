@@ -65,6 +65,12 @@ public class TagServiceImpl implements TagService {
 
         return map(tag);
     }
+    
+    @Override
+    public TagStatsResponse getTagStats() {
+        long total = tagRepository.count();
+        return new TagStatsResponse(total);
+    }
 
     private TagResponse map(Tag tag) {
         return new TagResponse(tag.getId(), tag.getName());

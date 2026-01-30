@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.e_commerce.category.CategoryRequest;
 import com.company.e_commerce.category.CategoryResponse;
 import com.company.e_commerce.category.CategoryService;
+import com.company.e_commerce.category.CategoryStatsResponse;
 import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.util.ResponseUtil;
 import jakarta.validation.Valid;
@@ -60,5 +61,13 @@ public class AdminCategoryController {
     public ResponseEntity<ApiResponse<CategoryResponse>> getById(@PathVariable Long id) {
         CategoryResponse category = categoryService.getById(id);
         return ResponseUtil.success("Category fetched successfully", category);
+    }
+    
+    @GetMapping("/stats")
+    public ResponseEntity<ApiResponse<CategoryStatsResponse>> categoryStats() {
+        return ResponseUtil.success(
+                "Category stats fetched successfully",
+                categoryService.getCategoryStats()
+        );
     }
 }

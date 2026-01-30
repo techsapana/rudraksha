@@ -17,6 +17,7 @@ import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.tag.TagRequest;
 import com.company.e_commerce.tag.TagResponse;
 import com.company.e_commerce.tag.TagService;
+import com.company.e_commerce.tag.TagStatsResponse;
 import com.company.e_commerce.util.ResponseUtil;
 
 import jakarta.validation.Valid;
@@ -75,6 +76,14 @@ public class AdminTagController {
         return ResponseUtil.success(
                 "Tag fetched successfully",
                 tagService.getById(id)
+        );
+    }
+    
+    @GetMapping("/tags")
+    public ResponseEntity<ApiResponse<TagStatsResponse>> tagStats() {
+        return ResponseUtil.success(
+                "Tag stats fetched successfully",
+                tagService.getTagStats()
         );
     }
 }

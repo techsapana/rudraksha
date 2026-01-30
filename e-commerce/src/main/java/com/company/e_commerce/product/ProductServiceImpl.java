@@ -182,7 +182,27 @@ public class ProductServiceImpl implements ProductService {
         // 3️⃣ HARD DELETE product from DB
         productRepository.delete(product);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public ProductStatsResponse getProductStats() {
 
+        long totalProducts = productRepository.count();
+
+        MostSoldProductResponse mostSold = productRepository
+                .findTopByOrderBySoldCountDesc()
+                .map(p -> new MostSoldProductResponse(
+                        p.getId(),
+                        p.getName(),
+                        p.getSoldCount()
+                ))
+                .orElse(null);
+
+        return new ProductStatsResponse(
+                totalProducts,
+                mostSold
+        );
+    }
 
     private ProductResponse map(Product product) {
 

@@ -146,6 +146,12 @@ public class BlogServiceImpl implements BlogService {
                 .createdAt(blog.getCreatedAt())
                 .build();
     }
+    
+    @Override
+    public BlogStatsResponse getBlogStats() {
+        long total = blogRepository.count();
+        return new BlogStatsResponse(total);
+    }
 
     private BlogDetailResponse mapToDetail(Blog blog) {
         return BlogDetailResponse.builder()

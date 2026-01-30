@@ -17,6 +17,7 @@ import com.company.e_commerce.blog.BlogDetailResponse;
 import com.company.e_commerce.blog.BlogListResponse;
 import com.company.e_commerce.blog.BlogRequest;
 import com.company.e_commerce.blog.BlogService;
+import com.company.e_commerce.blog.BlogStatsResponse;
 import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.util.ResponseUtil;
 
@@ -75,6 +76,14 @@ public class BlogAdminController {
         return ResponseUtil.success(
                 "Blog fetched successfully",
                 blogService.getById(id)
+        );
+    }
+    
+    @GetMapping("/blogs")
+    public ResponseEntity<ApiResponse<BlogStatsResponse>> blogStats() {
+        return ResponseUtil.success(
+                "Blog stats fetched successfully",
+                blogService.getBlogStats()
         );
     }
 }
