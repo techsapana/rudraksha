@@ -102,6 +102,7 @@ public class BlogServiceImpl implements BlogService {
     }
     
     @Override
+    @Transactional
     public void delete(Long id) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
