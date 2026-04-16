@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ShoppingBag, Eye, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShoppingBag, Sparkles } from "lucide-react";
 import type { ProductResponse } from "@/lib/types";
 
 const API_URL = "http://localhost:8090/api/products";
@@ -97,11 +97,8 @@ const FeaturedSpotlightSection = () => {
   if (products.length === 0) return null;
 
   const activeProduct = products[currentIndex];
-  const leftProducts = [
+  const bgProducts = [
     products[(currentIndex - 1 + products.length) % products.length],
-    products[(currentIndex - 2 + products.length) % products.length],
-  ];
-  const rightProducts = [
     products[(currentIndex + 1) % products.length],
     products[(currentIndex + 2) % products.length],
   ];
@@ -136,7 +133,7 @@ const FeaturedSpotlightSection = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="relative flex items-center justify-center min-h-[280px] lg:min-h-[320px]">
+          <div className="relative flex items-center justify-center min-h-[380px] lg:min-h-[420px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -146,11 +143,10 @@ const FeaturedSpotlightSection = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                <div className="flex items-center justify-center gap-3 lg:gap-4 w-full max-w-4xl px-2">
-                  <SpotlightSideStack products={leftProducts} side="left" />
-                  <SpotlightCardActive product={activeProduct} />
-                  <SpotlightSideStack products={rightProducts} side="right" />
-                </div>
+                <SpotlightStack 
+                  activeProduct={activeProduct} 
+                  bgProducts={bgProducts} 
+                />
               </motion.div>
             </AnimatePresence>
           </div>
@@ -182,57 +178,74 @@ const FeaturedSpotlightSection = () => {
   );
 };
 
-interface SpotlightSideStackProps {
-  products: ProductResponse[];
-  side: "left" | "right";
+interface SpotlightStackProps {
+  activeProduct: ProductResponse;
+  bgProducts: ProductResponse[];
 }
 
-const SpotlightSideStack = ({ products, side }: SpotlightSideStackProps) => {
-  const isLeft = side === "left";
-  
+const SpotlightStack = ({ activeProduct, bgProducts }: SpotlightStackProps) => {
   return (
-    <div className={`hidden sm:flex flex-col ${isLeft ? 'items-end' : 'items-start'} gap-2`}>
-      {products.map((product, idx) => (
-        <motion.div
-          key={`${product.id}-${side}-${idx}`}
-          initial={{ opacity: 0, x: isLeft ? -10 : 10 }}
-          animate={{ 
-            opacity: 0.4 - idx * 0.1, 
-            scale: 0.7 - idx * 0.05,
-          }}
-          transition={{ duration: 0.3, delay: 0.15 + idx * 0.05 }}
-        >
-          <SpotlightCardSmall product={product} />
-        </motion.div>
-      ))}
+    <div className="relative w-full max-w-lg h-[320px] flex items-center justify-center">
+      {/* Background cards - stacked behind - hidden on mobile */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none hidden sm:flex">
+        {bgProducts.map((product, idx) => (
+          <SpotlightCardBackground 
+            key={`${product.id}-bg-${idx}`} 
+            product={product} 
+            index={idx}
+          />
+        ))}
+      </div>
+      
+      {/* Main active card - centered in front */}
+      <SpotlightCardActive product={activeProduct} />
     </div>
   );
 };
 
-interface SpotlightCardSmallProps {
+interface SpotlightCardBackgroundProps {
   product: ProductResponse;
+  index: number;
 }
 
-const SpotlightCardSmall = ({ product }: SpotlightCardSmallProps) => {
+const SpotlightCardBackground = ({ product, index }: SpotlightCardBackgroundProps) => {
   const images = product.images?.length ? product.images : DEFAULT_IMAGES;
-  const hasDiscount = product.discountPercentage > 0;
+  
+  const positions = [
+    { left: '-140px', top: '-30px', rotate: '-6deg', scale: 0.8, opacity: 0.35 },
+    { right: '-140px', top: '-20px', rotate: '6deg', scale: 0.8, opacity: 0.25 },
+    { left: '-100px', top: '40px', rotate: '-3deg', scale: 0.65, opacity: 0.15 },
+  ];
+  
+  const pos = positions[index] || positions[0];
 
   return (
-    <div className="w-16 lg:w-20 opacity-50 blur-[0.3px]">
-      <div className="relative aspect-square rounded-lg overflow-hidden bg-secondary/20 border border-border/20">
-        <img
-          src={images[0]}
-          alt={product.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-background/40" />
-        {hasDiscount && (
-          <span className="absolute top-1 left-1 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[7px] font-bold px-1 py-0.5 rounded">
-            -{product.discountPercentage}%
-          </span>
-        )}
+    <motion.div
+      className="absolute"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ 
+        opacity: pos.opacity,
+        scale: pos.scale,
+      }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
+      style={{
+        left: pos.left,
+        right: pos.right,
+        top: pos.top,
+        transform: `rotate(${pos.rotate})`,
+      }}
+    >
+      <div className="w-32 lg:w-40 rounded-xl overflow-hidden blur-[1px]">
+        <div className="relative aspect-square">
+          <img
+            src={images[0]}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-background/50" />
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -246,10 +259,10 @@ const SpotlightCardActive = ({ product }: SpotlightCardActiveProps) => {
 
   return (
     <motion.div
-      className="order-2 w-full max-w-[200px] lg:max-w-[240px] bg-card border border-border/50 rounded-2xl overflow-hidden shadow-lg shadow-black/5"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, delay: 0.1 }}
+      className="relative z-30 w-full max-w-xs lg:max-w-sm bg-card border border-border/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/20"
+      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
     >
       <div className="relative aspect-square overflow-hidden bg-secondary/20">
         <img
@@ -258,27 +271,31 @@ const SpotlightCardActive = ({ product }: SpotlightCardActiveProps) => {
           className="w-full h-full object-cover"
         />
         {hasDiscount && (
-          <span className="absolute top-2 left-2 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[9px] font-bold px-2 py-0.5 rounded">
+          <span className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] font-bold px-2.5 py-1 rounded">
             -{product.discountPercentage}%
           </span>
         )}
       </div>
 
-      <div className="p-3">
-        <p className="text-[8px] font-body font-medium tracking-[0.15em] text-primary uppercase mb-1">
+      <div className="p-4 sm:p-5">
+        <p className="text-[10px] font-body font-medium tracking-[0.2em] text-primary uppercase mb-1.5">
           {product.category?.replace(/-/g, " ") || "Rudraksha"}
         </p>
         
-        <h3 className="font-heading text-sm text-foreground mb-1 line-clamp-1">
+        <h3 className="font-heading text-lg sm:text-xl text-foreground mb-2 line-clamp-2">
           {product.name}
         </h3>
+
+        <p className="text-muted-foreground text-xs sm:text-sm mb-4 line-clamp-2">
+          {product.description}
+        </p>
         
-        <div className="flex items-baseline gap-1.5 mb-2">
-          <span className="text-base font-body font-bold text-gradient-gold">
+        <div className="flex items-baseline gap-2 mb-4">
+          <span className="text-xl sm:text-2xl font-body font-bold text-gradient-gold">
             ${hasDiscount ? product.discountedPrice?.toFixed(2) : product.price?.toFixed(2)}
           </span>
           {hasDiscount && (
-            <span className="text-[10px] text-muted-foreground line-through">
+            <span className="text-xs sm:text-sm text-muted-foreground line-through">
               ${product.price?.toFixed(2)}
             </span>
           )}
@@ -286,9 +303,9 @@ const SpotlightCardActive = ({ product }: SpotlightCardActiveProps) => {
 
         <Link
           to={`/products/${product.id}`}
-          className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-primary to-primary/90 text-white py-2 rounded-lg text-xs font-body font-semibold hover:shadow-md transition-all"
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary/90 text-white py-2.5 sm:py-3 rounded-xl text-sm font-body font-semibold hover:shadow-lg hover:shadow-primary/20 transition-all"
         >
-          <ShoppingBag size={12} />
+          <ShoppingBag size={16} />
           View Details
         </Link>
       </div>
