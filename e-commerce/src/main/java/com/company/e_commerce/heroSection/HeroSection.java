@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "hero_sections")
+@Table(name = "gallery_images",
+    indexes = {
+        @Index(name = "idx_active", columnList = "is_active")
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,17 +21,16 @@ public class HeroSection {
     private Long id;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
-    private Double basePrice;
-
-    @Column(nullable = false)
     private String imageUrl;
 
     @Column(nullable = false)
     private String imagePublicId;
 
+    @Column(nullable = false)
     @Builder.Default
     private Boolean isActive = true;
+
+    // Optional: control display order (VERY IMPORTANT for UI)
+    @Column
+    private Integer displayOrder;
 }

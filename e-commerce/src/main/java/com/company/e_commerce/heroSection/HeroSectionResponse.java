@@ -8,8 +8,6 @@ import lombok.Data;
 public class HeroSectionResponse {
 
     private Long id;
-    private String title;
-    private Double basePrice;
     private String imageUrl;
-}
-		
+    private Integer displayOrder;
+}	

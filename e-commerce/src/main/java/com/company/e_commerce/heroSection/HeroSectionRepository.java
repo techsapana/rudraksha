@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface HeroSectionRepository
         extends JpaRepository<HeroSection, Long> {
 
-    List<HeroSection> findByIsActiveTrue();
+	List<HeroSection> findByIsActiveTrueOrderByDisplayOrderAsc();
 }

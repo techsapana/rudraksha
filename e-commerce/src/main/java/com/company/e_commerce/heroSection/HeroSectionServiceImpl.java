@@ -1,5 +1,6 @@
 package com.company.e_commerce.heroSection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -18,48 +19,52 @@ public class HeroSectionServiceImpl implements HeroSectionService {
     private final ImageService imageService;
 
     @Override
-    public HeroSectionResponse create(
-            HeroSectionRequest request,
-            MultipartFile image) {
+    public List<HeroSectionResponse> createBulk(
+            List<MultipartFile> images,
+            List<Integer> displayOrders
+    ) {
 
-        CloudinaryImageResult img =
-                imageService.uploadHeroImage(image);
+        List<HeroSection> galleryList = new ArrayList<>();
 
-        HeroSection hero = HeroSection.builder()
-                .title(request.getTitle())
-                .basePrice(request.getBasePrice())
-                .imageUrl(img.getImageUrl())
-                .imagePublicId(img.getPublicId())
-                .build();
+        for (int i = 0; i < images.size(); i++) {
 
-        return mapToResponse(repository.save(hero));
+            MultipartFile file = images.get(i);
+
+            CloudinaryImageResult img =
+                    imageService.uploadHeroImage(file);
+
+            HeroSection gallery = HeroSection.builder()
+                    .imageUrl(img.getImageUrl())
+                    .imagePublicId(img.getPublicId())
+                    .displayOrder(
+                            displayOrders != null && displayOrders.size() > i
+                                    ? displayOrders.get(i)
+                                    : i
+                    )
+                    .isActive(true)
+                    .build();
+
+            galleryList.add(gallery);
+        }
+
+        return repository.saveAll(galleryList)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     @Override
-    public HeroSectionResponse update(
-            Long id,
-            HeroSectionRequest request,
-            MultipartFile image) {
+    public HeroSectionResponse updateMeta(Long id, Integer displayOrder, Boolean isActive) {
 
         HeroSection hero = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hero section not found"));
+                .orElseThrow(() -> new RuntimeException("Image not found"));
 
-        hero.setTitle(request.getTitle());
-        hero.setBasePrice(request.getBasePrice());
-
-        if (image != null && !image.isEmpty()) {
-            imageService.deleteImages(List.of(hero.getImagePublicId()));
-
-            CloudinaryImageResult img =
-                    imageService.uploadHeroImage(image);
-
-            hero.setImageUrl(img.getImageUrl());
-            hero.setImagePublicId(img.getPublicId());
-        }
+        hero.setDisplayOrder(displayOrder);
+        hero.setIsActive(isActive);
 
         return mapToResponse(repository.save(hero));
     }
-
+    
     @Override
     public void delete(Long id) {
         HeroSection hero = repository.findById(id)
@@ -83,7 +88,7 @@ public class HeroSectionServiceImpl implements HeroSectionService {
 
     @Override
     public List<HeroSectionResponse> getAllForUser() {
-        return repository.findByIsActiveTrue()
+        return repository.findByIsActiveTrueOrderByDisplayOrderAsc()
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -98,9 +103,8 @@ public class HeroSectionServiceImpl implements HeroSectionService {
     private HeroSectionResponse mapToResponse(HeroSection hero) {
         return HeroSectionResponse.builder()
                 .id(hero.getId())
-                .title(hero.getTitle())
-                .basePrice(hero.getBasePrice())
                 .imageUrl(hero.getImageUrl())
+                .displayOrder(hero.getDisplayOrder())
                 .build();
     }
 }

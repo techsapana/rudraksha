@@ -1,82 +1,77 @@
 package com.company.e_commerce.admin;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import org.springframework.web.multipart.MultipartFile;
 
-import com.company.e_commerce.heroSection.HeroSectionRequest;
+import com.company.e_commerce.heroSection.HeroSectionResponse;
 import com.company.e_commerce.heroSection.HeroSectionService;
-import com.company.e_commerce.heroSection.HeroSectionStatsResponse;
 import com.company.e_commerce.payload.ApiResponse;
 import com.company.e_commerce.util.ResponseUtil;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
-	@RequestMapping("/api/admin/hero")
-	@RequiredArgsConstructor
+@RequestMapping("/api/admin/gallery")
+@RequiredArgsConstructor
+@Slf4j
 public class HeroSectionAdminController {
 
     private final HeroSectionService service;
 
-    @PostMapping
-    public ResponseEntity<?> create(
-            @Valid @RequestPart HeroSectionRequest request,
-            @RequestPart MultipartFile image) {
+    // ✅ BULK UPLOAD
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<List<HeroSectionResponse>>> createBulk(
+            @RequestPart List<MultipartFile> images,
+            @RequestParam(required = false) List<Integer> displayOrders
+    ) {
 
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Hero section created",
-                service.create(request, image)
-            )
-        );
-    }
+        log.info("Uploading {} gallery images", images.size());
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(
-            @PathVariable Long id,
-            @Valid @RequestPart HeroSectionRequest request,
-            @RequestPart(required = false) MultipartFile image) {
-
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Hero section updated",
-                service.update(id, request, image)
-            )
-        );
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.ok(
-            ResponseUtil.success("Hero section deleted")
-        );
-    }
-
-    @GetMapping
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(
-            ResponseUtil.success(
-                "Hero sections fetched",
-                service.getAllForAdmin()
-            )
-        );
-    }
-    
-    @GetMapping("/heroes")
-    public ResponseEntity<ApiResponse<HeroSectionStatsResponse>> heroStats() {
         return ResponseUtil.success(
-                "Hero section stats fetched successfully",
-                service.getHeroStats()
+                "Gallery images uploaded successfully",
+                service.createBulk(images, displayOrders)
+        );
+    }
+
+    //  UPDATE METADATA (order + active)
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<HeroSectionResponse>> updateMeta(
+            @PathVariable Long id,
+            @RequestParam(required = false) Integer displayOrder,
+            @RequestParam(required = false) Boolean isActive
+    ) {
+
+        log.info("Updating gallery image with id {}", id);
+
+        return ResponseUtil.success(
+                "Gallery image updated successfully",
+                service.updateMeta(id, displayOrder, isActive)
+        );
+    }
+
+    //  DELETE IMAGE (FIXED VOID TYPE ISSUE)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+
+        log.info("Deleting gallery image with id {}", id);
+
+        service.delete(id);
+
+        return ResponseUtil.success("Gallery image deleted successfully");
+    }
+
+    //  ADMIN VIEW (ALL IMAGES)
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<HeroSectionResponse>>> getAll() {
+
+        return ResponseUtil.success(
+                "Gallery images fetched successfully",
+                service.getAllForAdmin()
         );
     }
 }

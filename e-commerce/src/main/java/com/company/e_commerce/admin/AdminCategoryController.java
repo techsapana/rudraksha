@@ -46,7 +46,7 @@ public class AdminCategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         categoryService.delete(id);
         return ResponseUtil.success("Category deleted successfully");
     }
@@ -63,6 +63,7 @@ public class AdminCategoryController {
         return ResponseUtil.success("Category fetched successfully", category);
     }
     
+    // in dashboard of admin 
     @GetMapping("/stats")
     public ResponseEntity<ApiResponse<CategoryStatsResponse>> categoryStats() {
         return ResponseUtil.success(

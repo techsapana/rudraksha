@@ -6,21 +6,27 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface HeroSectionService {
 
-    HeroSectionResponse create(
-            HeroSectionRequest request,
-            MultipartFile image
+    // Bulk upload (MAIN FEATURE)
+    List<HeroSectionResponse> createBulk(
+            List<MultipartFile> images,
+            List<Integer> displayOrders
     );
 
-    HeroSectionResponse update(
+    // Update metadata (order / active toggle)
+    HeroSectionResponse updateMeta(
             Long id,
-            HeroSectionRequest request,
-            MultipartFile image
+            Integer displayOrder,
+            Boolean isActive
     );
 
+    // Delete image
     void delete(Long id);
 
+    // Admin → all images
     List<HeroSectionResponse> getAllForAdmin();
-    HeroSectionStatsResponse getHeroStats();
 
+    // ✅ User → only active + ordered
     List<HeroSectionResponse> getAllForUser();
+
+	HeroSectionStatsResponse getHeroStats();
 }

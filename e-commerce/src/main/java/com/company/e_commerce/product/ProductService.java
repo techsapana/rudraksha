@@ -23,4 +23,6 @@ public interface ProductService {
     ProductResponse getProductById(Long id);
 
     void deleteProduct(Long id);
+    
+    ProductDetailResponse getProductDetail(Long productId);
 }

@@ -15,14 +15,14 @@ public class ProductCreateRequest {
     @NotBlank
     private String name;
 
-    private String description;
+    private String description; // SHORT (optional)
+    private String longDescription; // FULL DETAIL
 
     @NotNull
     private BigDecimal price;
 
+    private BigDecimal discountPercentage;
+
     @NotNull
     private Long categoryId;
-
-    @NotEmpty
-    private Set<Long> tagIds;
 }

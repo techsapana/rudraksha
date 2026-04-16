@@ -1,24 +1,19 @@
 package com.company.e_commerce.product;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.company.e_commerce.category.Category;
 import com.company.e_commerce.category.CategoryRepository;
-import com.company.e_commerce.expection.BadRequestException;
 import com.company.e_commerce.expection.ResourceNotFoundException;
 import com.company.e_commerce.image.CloudinaryImageResult;
 import com.company.e_commerce.image.ImageService;
-import com.company.e_commerce.tag.Tag;
-import com.company.e_commerce.tag.TagRepository;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,7 +23,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final TagRepository tagRepository;
     private final ImageService imageService;
 
     @Override
@@ -40,14 +34,13 @@ public class ProductServiceImpl implements ProductService {
         // 1️⃣ Fetch category
         Category category = categoryRepository.findById(request.getCategoryId())
             .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-
-        // 2️⃣ Fetch tags
-        Set<Tag> tags = new HashSet<>(tagRepository.findAllById(request.getTagIds()));
-        if (tags.isEmpty()) {
-            throw new BadRequestException("At least one tag is required");
-        }
-
-        // 3️⃣ Upload images
+           
+        BigDecimal discountedPrice = calculateDiscountedPrice(
+                request.getPrice(),
+                request.getDiscountPercentage()
+        );
+        
+        //  Upload images
         List<CloudinaryImageResult> uploadedImages =
                 imageService.uploadProductImages(
                         images,
@@ -55,19 +48,20 @@ public class ProductServiceImpl implements ProductService {
                         request.getName()
                 );
 
-        // 4️⃣ Build product with safe defaults
+        //  Build product with safe defaults
         Product product = Product.builder()
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
+                .discountPercentage(request.getDiscountPercentage())
+                .discountedPrice(discountedPrice)
                 .category(category)
-                .tags(tags)
                 .images(new ArrayList<>())
-                .isActive(true)        // Default to active
-                .soldCount(0L)         // Default sold count
+                .isActive(true)
+                .soldCount(0L)
                 .build();
 
-        // 5️⃣ Map uploaded images to ProductImage entities
+        //  Map uploaded images to ProductImage entities
         uploadedImages.forEach(img -> {
             ProductImage pi = new ProductImage();
             pi.setImageUrl(img.getImageUrl());
@@ -121,12 +115,14 @@ public class ProductServiceImpl implements ProductService {
             product.setCategory(category);
         }
 
-        // Update tags
-        Set<Tag> tags = new HashSet<>(tagRepository.findAllById(request.getTagIds()));
-        if (tags.isEmpty()) {
-            throw new BadRequestException("At least one tag is required");
-        }
-        product.setTags(tags);
+        product.setDiscountPercentage(request.getDiscountPercentage());
+
+        BigDecimal discountedPrice = calculateDiscountedPrice(
+                request.getPrice(),
+                request.getDiscountPercentage()
+        );
+
+        product.setDiscountedPrice(discountedPrice);
 
         // Replace images ONLY if new images are provided
         if (images != null && !images.isEmpty()) {
@@ -203,6 +199,31 @@ public class ProductServiceImpl implements ProductService {
                 mostSold
         );
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public ProductDetailResponse getProductDetail(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+        return ProductDetailResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .longDescription(product.getLongDescription()) // if added
+                .price(product.getPrice())
+                .discountPercentage(product.getDiscountPercentage())
+                .discountedPrice(product.getDiscountedPrice())
+                .category(product.getCategory().getName())
+                .images(
+                        product.getImages()
+                                .stream()
+                                .map(ProductImage::getImageUrl)
+                                .toList()
+                )
+                .build();
+    }
 
     private ProductResponse map(Product product) {
 
@@ -212,12 +233,8 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .category(product.getCategory().getName())
-                .tags(
-                    product.getTags()
-                        .stream()
-                        .map(Tag::getName)
-                        .collect(Collectors.toSet())
-                )
+                .discountPercentage(product.getDiscountPercentage())
+                .discountedPrice(product.getDiscountedPrice())
                 .images(
                     product.getImages()
                         .stream()
@@ -225,5 +242,18 @@ public class ProductServiceImpl implements ProductService {
                         .toList()
                 )
                 .build();
+    }
+    
+    private BigDecimal calculateDiscountedPrice(BigDecimal price, BigDecimal discountPercentage) {
+
+        if (discountPercentage == null || discountPercentage.compareTo(BigDecimal.ZERO) <= 0) {
+            return price;
+        }
+
+        BigDecimal discountAmount = price
+                .multiply(discountPercentage)
+                .divide(BigDecimal.valueOf(100));
+
+        return price.subtract(discountAmount);
     }
 }

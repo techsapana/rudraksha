@@ -8,14 +8,25 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ProductResponse {
+public class ProductDetailResponse {
 
     private Long id;
     private String name;
-    private BigDecimal price;
-    private String category;
+
+    // Short description (optional)
     private String description;
+
+    // Full detailed description (recommended for product page)
+    private String longDescription;
+
+    // Pricing
+    private BigDecimal price;
     private BigDecimal discountPercentage;
     private BigDecimal discountedPrice;
+
+    // Category name
+    private String category;
+
+    // All product images (gallery view)
     private List<String> images;
 }

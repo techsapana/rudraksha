@@ -28,11 +28,6 @@ public interface ProductRepository
             Pageable pageable
     );
 
-    // ✅ TAG FILTER
-    Page<Product> findByTags_IdAndIsActiveTrue(
-            Long tagId,
-            Pageable pageable
-    );
 
     // ✅ SEARCH BY NAME (CASE INSENSITIVE)
     Page<Product> findByNameContainingIgnoreCaseAndIsActiveTrue(

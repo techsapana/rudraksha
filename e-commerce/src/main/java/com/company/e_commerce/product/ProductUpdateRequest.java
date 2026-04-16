@@ -19,9 +19,11 @@ public class ProductUpdateRequest {
     @NotNull
     private BigDecimal price;
 
+    private BigDecimal discountPercentage;
+
     @NotNull
     private Long categoryId;
 
-    @NotEmpty
-    private Set<Long> tagIds;
+    
+
 }

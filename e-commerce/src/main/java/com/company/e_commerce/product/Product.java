@@ -2,11 +2,8 @@ package com.company.e_commerce.product;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import com.company.e_commerce.tag.Tag;
 import com.company.e_commerce.admin.BaseEntity;
 import com.company.e_commerce.category.Category;
 
@@ -19,8 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -54,21 +49,22 @@ public class Product extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+    
+    @Column(columnDefinition = "TEXT")
+    private String longDescription;
 
-    @Column(nullable = false)
-    private BigDecimal price; // USD
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(precision = 5, scale = 2)
+    private BigDecimal discountPercentage;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal discountedPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-
-    @ManyToMany
-    @JoinTable(
-        name = "product_tags",
-        joinColumns = @JoinColumn(name = "product_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(
         mappedBy = "product",
@@ -76,11 +72,12 @@ public class Product extends BaseEntity {
         orphanRemoval = true
     )
     private List<ProductImage> images = new ArrayList<>();
-    
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean isActive = true;
 
     @Column(nullable = false)
-    private Long soldCount = 0L; // VERY IMPORTANT FOR ANALYTICS
+    @Builder.Default
+    private Long soldCount = 0L;
 }

@@ -22,19 +22,19 @@ public class GlobalExceptionHandler {
 //    }
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ApiResponse<Object>> handleNotFound(ResourceNotFoundException ex) {
+	public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex) {
 	    log.warn("Resource not found: {}", ex.getMessage());
 	    return ResponseUtil.error(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
 	
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiResponse<Object>> handleBadRequest(BadRequestException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleBadRequest(BadRequestException ex) {
         log.warn("Bad request: {}", ex.getMessage());
         return ResponseUtil.error(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException ex) {
 
         String message = ex.getBindingResult()
                 .getFieldErrors()
@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
 
         String message = String.format(
                 "Invalid value '%s' for parameter '%s'",
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleGeneric(Exception ex) {
+    public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) {
         log.error("Unhandled exception occurred", ex);
         return ResponseUtil.error(
                 "Something went wrong. Please try again later.",
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
     }
     
     @ExceptionHandler(org.springframework.web.HttpMediaTypeNotAcceptableException.class)
-    public ResponseEntity<ApiResponse<Object>> handleMediaType() {
+    public ResponseEntity<ApiResponse<Void>> handleMediaType() {
         return ResponseUtil.error(
                 "Only application/json responses are supported",
                 HttpStatus.NOT_ACCEPTABLE
