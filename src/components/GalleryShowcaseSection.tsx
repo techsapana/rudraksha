@@ -44,8 +44,8 @@ const GalleryShowcaseSection = () => {
             viewport={{ once: true }}
             className="mb-10"
           >
-            <p className="text-xs font-body tracking-[0.3em] text-primary uppercase mb-1">Gallery</p>
-            <h2 className="text-2xl sm:text-3xl font-heading text-gradient-gold">Sacred Moments</h2>
+            <p className="text-xs font-body tracking-[0.3em] text-primary uppercase mb-1 font-bold">Gallery</p>
+            <h2 className="text-2xl sm:text-3xl font-heading font-bold text-gradient-gold">Sacred Moments</h2>
           </motion.div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
@@ -74,8 +74,8 @@ const GalleryShowcaseSection = () => {
           viewport={{ once: true }}
           className="mb-10"
         >
-          <p className="text-xs font-body tracking-[0.3em] text-primary uppercase mb-1">Gallery</p>
-          <h2 className="text-2xl sm:text-3xl font-heading text-gradient-gold">Sacred Moments</h2>
+<p className="text-xs font-body tracking-[0.3em] text-primary uppercase mb-1 font-bold">Gallery</p>
+              <h2 className="text-2xl sm:text-3xl font-heading font-bold text-gradient-gold">Sacred Moments</h2>
         </motion.div>
 
         <div className="hidden lg:grid lg:grid-cols-5 gap-3">

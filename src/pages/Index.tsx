@@ -76,7 +76,7 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <p className="text-xs font-body tracking-[0.35em] text-primary uppercase mb-4">About Rudraksha</p>
+              <p className="text-xs font-body tracking-[0.35em] text-primary uppercase mb-4 font-bold">About Rudraksha</p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading text-gradient-gold mb-8">The Sacred Seed</h2>
               
               <div className="space-y-6">

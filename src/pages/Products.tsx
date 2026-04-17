@@ -56,8 +56,8 @@ const Products = () => {
             className="text-center mb-8"
           >
             <p className="text-xs font-body tracking-[0.35em] text-primary uppercase mb-2">Collection</p>
-            <h1 className="text-2xl lg:text-3xl xl:text-4xl font-heading text-gradient-gold">Our Products</h1>
-            <p className="text-muted-foreground mt-3 max-w-lg mx-auto text-sm">
+            <h1 className="text-2xl lg:text-3xl xl:text-4xl font-heading font-bold text-gradient-gold">Our Products</h1>
+            <p className="text-muted-foreground mt-3 max-w-lg mx-auto text-sm font-bold">
               Explore our curated collection of authentic Rudraksha beads
             </p>
           </motion.div>

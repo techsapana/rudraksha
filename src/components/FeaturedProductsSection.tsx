@@ -208,11 +208,11 @@ const FeaturedProductsSection = () => {
           className="flex items-center justify-between mb-8"
         >
           <div>
-            <p className="text-xs font-body tracking-[0.3em] text-primary uppercase mb-1 flex items-center gap-2">
+            <p className="text-xs font-body tracking-[0.3em] text-primary uppercase mb-1 flex items-center gap-2 font-bold">
               <Sparkles size={12} className="text-gold" />
               Premium
             </p>
-            <h2 className="text-2xl sm:text-3xl font-heading text-gradient-gold">Featured Collection</h2>
+            <h2 className="text-2xl sm:text-3xl font-heading font-bold text-gradient-gold">Featured Collection</h2>
           </div>
           <Link
             to="/products"
