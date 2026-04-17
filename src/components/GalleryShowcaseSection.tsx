@@ -78,7 +78,7 @@ const GalleryShowcaseSection = () => {
           <h2 className="text-2xl sm:text-3xl font-heading text-gradient-gold">Sacred Moments</h2>
         </motion.div>
 
-        <div className="hidden lg:grid lg:grid-cols-5 gap-4">
+        <div className="hidden lg:grid lg:grid-cols-5 gap-3">
           <div className="lg:col-span-2">
             <HeroImage 
               image={heroImage} 
@@ -87,7 +87,7 @@ const GalleryShowcaseSection = () => {
             />
           </div>
 
-          <div className="lg:col-span-3 flex flex-col gap-3">
+          <div className="lg:col-span-3 flex flex-col gap-2.5">
             {rightImages.map((image, index) => (
               <GalleryCard 
                 key={image.id} 
@@ -155,13 +155,13 @@ const HeroImage = ({ image, onSelect, allImages }: HeroImageProps) => {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
-      className="relative bg-card border border-border/60 rounded-2xl overflow-hidden shadow-lg"
+      className="relative bg-card border border-border/60 rounded-xl overflow-hidden shadow-lg"
     >
       <div className="relative">
-        <div className="aspect-square overflow-hidden max-h-[350px]">
+        <div className="aspect-square overflow-hidden max-h-[260px]">
           {hasError ? (
             <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
-              <ImageOff className="w-12 h-12 text-muted-foreground" />
+              <ImageOff className="w-10 h-10 text-muted-foreground" />
             </div>
           ) : (
             <>
@@ -184,14 +184,14 @@ const HeroImage = ({ image, onSelect, allImages }: HeroImageProps) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
         <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300">
-          <div className="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-xl backdrop-blur-sm">
-            <Eye size={24} className="text-foreground" />
+          <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-xl backdrop-blur-sm">
+            <Eye size={20} className="text-foreground" />
           </div>
         </div>
       </div>
 
       {allImages.length > 1 && (
-        <div className="absolute bottom-14 lg:bottom-16 left-1/2 -translate-x-1/2 flex gap-1.5">
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-1.5">
           {allImages.map((_, idx) => (
             <button
               key={idx}
@@ -200,7 +200,7 @@ const HeroImage = ({ image, onSelect, allImages }: HeroImageProps) => {
                 onSelect(idx);
               }}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                idx === allImages.indexOf(image) ? "bg-primary w-6" : "bg-white/50 hover:bg-white/80"
+                idx === allImages.indexOf(image) ? "bg-primary w-5" : "bg-white/50 hover:bg-white/80"
               }`}
             />
           ))}
@@ -229,14 +229,14 @@ const GalleryCard = ({ image, index, isActive, onClick, compact }: GalleryCardPr
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: index * 0.08 }}
         onClick={onClick}
-        className={`min-w-[140px] w-[140px] flex-shrink-0 bg-card border rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 ${
+        className={`min-w-[100px] w-[100px] flex-shrink-0 bg-card border rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 ${
           isActive ? "border-primary ring-2 ring-primary/30" : "border-border/60"
         }`}
       >
         <div className="aspect-square overflow-hidden">
           {hasError ? (
             <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
-              <ImageOff className="w-6 h-6 text-muted-foreground" />
+              <ImageOff className="w-5 h-5 text-muted-foreground" />
             </div>
           ) : (
             <>
@@ -266,15 +266,15 @@ const GalleryCard = ({ image, index, isActive, onClick, compact }: GalleryCardPr
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4, delay: index * 0.08 }}
       onClick={onClick}
-      className={`group relative bg-card border rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] ${
+      className={`group relative bg-card border rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] ${
         isActive ? "border-primary ring-2 ring-primary/30" : "border-border/60"
       }`}
     >
-      <div className="flex gap-3 p-2.5">
-        <div className="w-20 h-20 lg:w-24 lg:h-24 flex-shrink-0 rounded-lg overflow-hidden">
+      <div className="flex gap-2 p-1.5">
+        <div className="w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-md overflow-hidden">
           {hasError ? (
             <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
-              <ImageOff className="w-6 h-6 text-muted-foreground" />
+              <ImageOff className="w-5 h-5 text-muted-foreground" />
             </div>
           ) : (
             <>
@@ -295,18 +295,18 @@ const GalleryCard = ({ image, index, isActive, onClick, compact }: GalleryCardPr
           )}
         </div>
         
-        <div className="flex-1 min-w-0 py-3">
-          <p className="text-[10px] font-body font-medium tracking-[0.15em] text-primary uppercase">
+        <div className="flex-1 min-w-0 py-2">
+          <p className="text-[9px] font-body font-medium tracking-[0.12em] text-primary uppercase">
             Image
           </p>
-          <h4 className="text-sm font-heading text-foreground truncate">
+          <h4 className="text-xs font-heading text-foreground truncate">
             Gallery Picture
           </h4>
         </div>
 
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/30 rounded-2xl">
-          <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-            <Eye size={18} className="text-foreground" />
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/30 rounded-xl">
+          <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+            <Eye size={14} className="text-foreground" />
           </div>
         </div>
       </div>

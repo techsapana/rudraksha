@@ -279,8 +279,8 @@ const HeroProductDisplay = ({ product }: HeroProductDisplayProps) => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-secondary/30 via-card to-secondary/20 border border-border/40 shadow-2xl shadow-black/5">
-          <div className="relative aspect-[4/3] lg:aspect-[3/2] overflow-hidden">
+        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-secondary/30 via-card to-secondary/20 border border-border/40 shadow-2xl shadow-black/5">
+          <div className="relative aspect-[3/4] sm:aspect-[4/3] lg:aspect-[3/2] overflow-hidden">
             <motion.div
               initial={{ scale: 1.05 }}
               animate={{ scale: 1 }}
@@ -307,38 +307,38 @@ const HeroProductDisplay = ({ product }: HeroProductDisplayProps) => {
               </motion.div>
             )}
 
-            <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
+            <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 lg:p-5">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 }}
               >
-                <p className="text-xs font-body font-medium tracking-[0.2em] text-white/70 uppercase mb-2">
+                <p className="text-[10px] sm:text-xs font-body font-medium tracking-[0.15em] text-white/70 uppercase mb-1">
                   {product.category}
                   {product.mukhi && ` • ${product.mukhi} Mukhi`}
                 </p>
-                <h3 className="text-2xl lg:text-3xl font-heading text-white mb-2">
+                <h3 className="text-lg sm:text-xl font-heading text-white mb-1.5">
                   {product.name}
                 </h3>
-                <p className="text-sm text-white/80 mb-4 line-clamp-2 max-w-md">
+                <p className="text-xs sm:text-sm text-white/80 mb-2 sm:mb-3 line-clamp-2 max-w-xs sm:max-w-md">
                   {product.description}
                 </p>
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl lg:text-3xl font-body font-bold text-gradient-gold">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                  <div className="flex items-baseline gap-1.5 sm:gap-2">
+                    <span className="text-lg sm:text-xl font-body font-bold text-gradient-gold">
                       ${hasDiscount ? product.discountedPrice?.toFixed(2) : product.price?.toFixed(2)}
                     </span>
                     {hasDiscount && (
-                      <span className="text-sm text-white/50 line-through">
+                      <span className="text-xs sm:text-sm text-white/50 line-through">
                         ${product.originalPrice?.toFixed(2)}
                       </span>
                     )}
                   </div>
                   <Link
                     to={`/products/${product.id}`}
-                    className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white px-5 py-2.5 rounded-xl text-sm font-body font-semibold transition-all border border-white/20 hover:border-white/40"
+                    className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-body font-medium transition-all border border-white/20 hover:border-white/40"
                   >
-                    <ShoppingBag size={16} />
+                    <ShoppingBag size={12} sm={14} />
                     View Details
                   </Link>
                 </div>
@@ -376,7 +376,7 @@ const SideProductGrid = ({
   };
 
   return (
-    <div className="space-y-4" onMouseLeave={onMouseLeave}>
+    <div className="space-y-3" onMouseLeave={onMouseLeave}>
       {allProducts.map((product, idx) => (
         <SideProductCard
           key={product.id}
@@ -412,8 +412,8 @@ const SideProductCard = ({ product, index, isActive, onHover }: SideProductCardP
           : "bg-transparent border-l-2 border-transparent hover:bg-gradient-to-r hover:from-secondary/50 to-transparent"
       } rounded-r-xl`}
     >
-      <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-card/50 transition-colors">
-        <div className="relative w-20 h-20 lg:w-24 lg:h-24 rounded-xl overflow-hidden flex-shrink-0 shadow-lg">
+      <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-card/50 transition-colors">
+        <div className="relative w-18 h-18 lg:w-20 lg:h-20 rounded-lg overflow-hidden flex-shrink-0 shadow-md">
           <img
             src={product.image}
             alt={product.name}
@@ -427,7 +427,7 @@ const SideProductCard = ({ product, index, isActive, onHover }: SideProductCardP
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-body font-medium tracking-[0.15em] text-muted-foreground uppercase mb-0.5">
+          <p className="text-[10px] font-body font-medium tracking-[0.12em] text-muted-foreground uppercase mb-0.5">
             {product.category}
           </p>
           <h4 className="font-heading text-sm text-foreground truncate group-hover:text-primary transition-colors">

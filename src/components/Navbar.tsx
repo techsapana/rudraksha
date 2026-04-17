@@ -51,8 +51,9 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link, i) => (
+            {navLinks.map((link) => (
                   <Link
+                    key={link.to}
                     to={link.to}
                     onClick={() => setIsOpen(false)}
                     className={`group relative block py-3 px-4 text-base font-heading font-semibold tracking-wide rounded-xl transition-all ${
