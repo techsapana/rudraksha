@@ -157,8 +157,8 @@ const HeroImage = ({ image, onSelect, allImages }: HeroImageProps) => {
       transition={{ duration: 0.5 }}
       className="relative bg-card border border-border/60 rounded-xl overflow-hidden shadow-lg"
     >
-      <div className="relative">
-        <div className="aspect-square overflow-hidden max-h-[260px]">
+        <div className="relative">
+          <div className="aspect-square overflow-hidden max-h-[400px]">
           {hasError ? (
             <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
               <ImageOff className="w-10 h-10 text-muted-foreground" />
@@ -229,7 +229,7 @@ const GalleryCard = ({ image, index, isActive, onClick, compact }: GalleryCardPr
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: index * 0.08 }}
         onClick={onClick}
-        className={`min-w-[100px] w-[100px] flex-shrink-0 bg-card border rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 ${
+        className={`min-w-[120px] w-[120px] flex-shrink-0 bg-card border rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 ${
           isActive ? "border-primary ring-2 ring-primary/30" : "border-border/60"
         }`}
       >
@@ -270,8 +270,8 @@ const GalleryCard = ({ image, index, isActive, onClick, compact }: GalleryCardPr
         isActive ? "border-primary ring-2 ring-primary/30" : "border-border/60"
       }`}
     >
-      <div className="flex gap-2 p-1.5">
-        <div className="w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-md overflow-hidden">
+        <div className="flex gap-3 p-2">
+          <div className="w-24 h-24 lg:w-28 lg:h-28 flex-shrink-0 rounded-md overflow-hidden">
           {hasError ? (
             <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
               <ImageOff className="w-5 h-5 text-muted-foreground" />
