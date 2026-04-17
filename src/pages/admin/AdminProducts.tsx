@@ -130,19 +130,26 @@ const AdminProducts = () => {
 
     setSubmitting(true);
     try {
-      const request: ProductCreateRequest | ProductUpdateRequest = {
-        name: form.name,
-        description: form.description || undefined,
-        longDescription: form.longDescription || undefined,
-        price: parseFloat(form.price),
-        discountPercentage: form.discountPercentage ? parseFloat(form.discountPercentage) : undefined,
-        categoryId: parseInt(form.categoryId),
-      };
-
       if (editing) {
+        const request: ProductUpdateRequest = {
+          name: form.name,
+          description: form.description || undefined,
+          longDescription: form.longDescription || undefined,
+          price: parseFloat(form.price),
+          discountPercentage: form.discountPercentage ? parseFloat(form.discountPercentage) : undefined,
+          categoryId: parseInt(form.categoryId),
+        };
         await updateProductApi(editing, request, form.images.length > 0 ? form.images : undefined);
         toast.success("Product updated", { description: "Changes saved successfully" });
       } else {
+        const request: ProductCreateRequest = {
+          name: form.name,
+          description: form.description || undefined,
+          longDescription: form.longDescription || undefined,
+          price: parseFloat(form.price),
+          discountPercentage: form.discountPercentage ? parseFloat(form.discountPercentage) : undefined,
+          categoryId: parseInt(form.categoryId),
+        };
         await createProduct(request, form.images);
         toast.success("Product created", { description: `${form.name} has been added to the inventory` });
       }
@@ -158,7 +165,7 @@ const AdminProducts = () => {
   const handleDelete = async (id: number) => {
     try {
       await deleteProductApi(id);
-      toast.error("Product deleted", { description: "Product has been removed" });
+      toast.success("Product deleted", { description: "Product has been removed" });
     } catch (error) {
       toast.error("Failed to delete product");
     }

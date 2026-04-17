@@ -7,19 +7,29 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, Pencil, Trash2, Package, Loader2, DollarSign, Tag, Calendar, FileText, ImageIcon } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ArrowLeft, ArrowRight, Pencil, Package, Loader2, DollarSign, Tag, Calendar, FileText, ImageIcon, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { ProductDetailResponse } from "@/lib/types";
 
 const AdminProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { loadProductDetail, deleteProductApi, adminCategories } = useAdmin();
+   const { loadProductDetail, deleteProductApi, adminCategories } = useAdmin();
   
   const [product, setProduct] = useState<ProductDetailResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [imageIndex, setImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("overview");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -49,31 +59,28 @@ const AdminProductDetail = () => {
     }
   };
 
-  const prevImage = () => {
-    if (product?.images) {
-      setImageIndex(prev => prev === 0 ? product.images.length - 1 : prev - 1);
-    }
-  };
+   const prevImage = () => {
+     if (product?.images) {
+       setImageIndex(prev => prev === 0 ? product.images.length - 1 : prev - 1);
+     }
+   };
 
-  const handleDelete = async () => {
-    if (!product) return;
-    if (!confirm("Are you sure you want to delete this product?")) return;
-    
-    try {
-      await deleteProductApi(product.id);
-      toast.success("Product deleted successfully");
-      navigate("/admin/products");
-    } catch (error) {
-      toast.error("Failed to delete product");
-    }
-  };
+   const handleDelete = async () => {
+     if (!product) return;
+     setDeleting(true);
+     try {
+       await deleteProductApi(product.id);
+       toast.success("Product deleted successfully");
+       navigate("/admin/products");
+     } catch (error) {
+       toast.error("Failed to delete product");
+     } finally {
+       setDeleting(false);
+       setDeleteDialogOpen(false);
+     }
+   };
 
-  const getCategoryId = (categoryName: string) => {
-    const category = adminCategories.find(c => c.name === categoryName);
-    return category?.id;
-  };
-
-  if (loading) {
+   if (loading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[400px]">
@@ -110,16 +117,12 @@ const AdminProductDetail = () => {
               <p className="text-muted-foreground text-sm">Product Details</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => navigate(`/admin/products/edit/${product.id}`)}>
-              <Pencil size={16} className="mr-2" />
-              Edit
-            </Button>
-            <Button variant="destructive" onClick={handleDelete}>
-              <Trash2 size={16} className="mr-2" />
-              Delete
-            </Button>
-          </div>
+            <div className="flex items-center gap-2">
+              {/* <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
+                <Trash2 size={16} className="mr-2" />
+                Delete
+              </Button> */}
+            </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -188,8 +191,9 @@ const AdminProductDetail = () => {
                     ))}
                   </div>
                 )}
-              </CardContent>
+</CardContent>
             </Card>
+          </div>
 
             <Card>
               <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -324,43 +328,13 @@ const AdminProductDetail = () => {
                     {product.discountPercentage ? `${product.discountPercentage}% OFF` : "No Discount"}
                   </Badge>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button 
-                  className="w-full" 
-                  onClick={() => navigate(`/admin/products/edit/${product.id}`)}
-                >
-                  <Pencil size={16} className="mr-2" />
-                  Edit Product
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => window.open(`/products/${product.id}`, '_blank')}
-                >
-                  View on Storefront
-                </Button>
-                <Button 
-                  variant="destructive" 
-                  className="w-full"
-                  onClick={handleDelete}
-                >
-                  <Trash2 size={16} className="mr-2" />
-                  Delete Product
-                </Button>
-              </CardContent>
+</CardContent>
             </Card>
           </div>
         </div>
-      </div>
+
+    
     </AdminLayout>
   );
 };
-
 export default AdminProductDetail;
