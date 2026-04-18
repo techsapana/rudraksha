@@ -224,26 +224,40 @@ const FeaturedProductsSection = () => {
         </motion.div>
 
         <div
-          className="relative"
+          className="relative overflow-hidden"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:gap-8">
             <div className="lg:col-span-3 order-1">
               <HeroProductDisplay product={activeProduct} />
             </div>
 
             <div className="lg:col-span-2 order-2">
-              <SideProductGrid
-                products={sideProducts}
-                currentIndex={currentIndex}
-                allProducts={products}
-                onProductHover={handleProductHover}
-                onMouseLeave={handleMouseLeave}
-              />
+              <div className="lg:hidden mb-4">
+                <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+                  {products.map((product) => (
+                    <SideProductCardCompact
+                      key={product.id}
+                      product={product}
+                      isActive={product.id === activeProduct.id}
+                      onClick={() => setCurrentIndex(products.findIndex(p => p.id === product.id))}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="hidden lg:block">
+                <SideProductGrid
+                  products={sideProducts}
+                  currentIndex={currentIndex}
+                  allProducts={products}
+                  onProductHover={handleProductHover}
+                  onMouseLeave={handleMouseLeave}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -446,6 +460,55 @@ const SideProductCard = ({ product, index, isActive, onHover }: SideProductCardP
         </div>
       </div>
     </motion.div>
+  );
+};
+
+interface SideProductCardCompactProps {
+  product: ShowcaseProduct;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+const SideProductCardCompact = ({ product, isActive, onClick }: SideProductCardCompactProps) => {
+  const hasDiscount = product.discountedPrice && product.originalPrice;
+
+  return (
+    <motion.button
+      onClick={onClick}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`relative group cursor-pointer flex-shrink-0 w-[140px] transition-all duration-300 ${
+        isActive
+          ? "bg-primary/10 border-primary"
+          : "bg-card/80 border-border/40 hover:border-primary/50"
+      } border rounded-xl overflow-hidden`}
+    >
+      <div className="relative w-full aspect-square overflow-hidden">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+        {product.badge && (
+          <div className="absolute top-1.5 right-1.5">
+            <Badge type={product.badge} small />
+          </div>
+        )}
+      </div>
+      <div className="p-2 text-left min-w-0">
+        <p className="text-[8px] font-body font-medium tracking-[0.1em] text-muted-foreground uppercase truncate">
+          {product.category}
+        </p>
+        <h4 className="font-heading text-xs text-foreground truncate group-hover:text-primary transition-colors">
+          {product.name}
+        </h4>
+        <div className="flex items-baseline gap-1.5 mt-0.5">
+          <span className="text-xs font-body font-bold text-gradient-gold">
+            ${hasDiscount ? product.discountedPrice?.toFixed(2) : product.price?.toFixed(2)}
+          </span>
+        </div>
+      </div>
+    </motion.button>
   );
 };
 

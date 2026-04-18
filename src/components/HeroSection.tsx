@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 const HeroSection = () => (
-  <section className="relative min-h-[85vh] sm:min-h-[92vh] flex items-center justify-center overflow-hidden">
+  <section className="relative min-h-[60vh] sm:min-h-[75vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden">
     {/* Background Image Layer */}
     <div className="absolute inset-0">
       <img
         src="/images/images (1).jfif"
         alt="Rudraksha Background"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover object-center"
       />
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />

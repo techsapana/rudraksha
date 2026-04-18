@@ -66,16 +66,16 @@ const GalleryShowcaseSection = () => {
   const rightImages = displayImages.filter((_, i) => i !== selectedIndex).slice(0, 3);
 
   return (
-    <section className="py-16 lg:py-24 bg-gradient-to-b from-background to-secondary/20">
+    <section className="py-12 lg:py-24 bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto px-4 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-10"
+          className="mb-8 lg:mb-10"
         >
-<p className="text-xs font-body tracking-[0.3em] text-primary uppercase mb-1 font-bold">Gallery</p>
-              <h2 className="text-2xl sm:text-3xl font-heading font-bold text-gradient-gold">Sacred Moments</h2>
+          <p className="text-xs font-body tracking-[0.3em] text-primary uppercase mb-1 font-bold">Gallery</p>
+          <h2 className="text-2xl sm:text-3xl font-heading font-bold text-gradient-gold">Sacred Moments</h2>
         </motion.div>
 
         <div className="hidden lg:grid lg:grid-cols-5 gap-3">
@@ -100,14 +100,16 @@ const GalleryShowcaseSection = () => {
           </div>
         </div>
 
-        <div className="lg:hidden space-y-6">
-          <HeroImage 
-            image={heroImage} 
-            onSelect={(idx) => setSelectedIndex(idx)}
-            allImages={displayImages}
-          />
+        <div className="lg:hidden space-y-4">
+          <div className="w-full">
+            <HeroImage 
+              image={heroImage} 
+              onSelect={(idx) => setSelectedIndex(idx)}
+              allImages={displayImages}
+            />
+          </div>
           
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
             {displayImages.map((image, index) => (
               <GalleryCard 
                 key={image.id} 
@@ -157,8 +159,7 @@ const HeroImage = ({ image, onSelect, allImages }: HeroImageProps) => {
       transition={{ duration: 0.5 }}
       className="relative bg-card border border-border/60 rounded-xl overflow-hidden shadow-lg"
     >
-        <div className="relative">
-          <div className="aspect-square overflow-hidden max-h-[400px]">
+        <div className="relative w-full aspect-square lg:aspect-auto lg:h-[400px]">
           {hasError ? (
             <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
               <ImageOff className="w-10 h-10 text-muted-foreground" />
@@ -188,10 +189,9 @@ const HeroImage = ({ image, onSelect, allImages }: HeroImageProps) => {
             <Eye size={20} className="text-foreground" />
           </div>
         </div>
-      </div>
 
       {allImages.length > 1 && (
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-1.5">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
           {allImages.map((_, idx) => (
             <button
               key={idx}
